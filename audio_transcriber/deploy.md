@@ -72,9 +72,19 @@ Results appear in `./output/` directory.
 
 ```bash
 curl -X POST http://localhost:8000/jobs \
-  -F "file=@audio.wav" \
-  -F "priority=normal" \
-  -F "expected_speakers=2"
+  -H "Content-Type: application/json" \
+  -d '{
+    "audio_url": "file:///data/input/audio.wav",
+    "source_metadata": {
+      "priority": "normal",
+      "expected_speakers": 2,
+      "environment": "clean"
+    },
+    "processing_options": {
+      "diarization": true,
+      "language": "en"
+    }
+  }'
 ```
 
 ## Production Considerations

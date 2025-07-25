@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Test the doctrine-compliant API"""
+"""Test the API (doctrine-compliant implementation)"""
 
 import os
 import sys

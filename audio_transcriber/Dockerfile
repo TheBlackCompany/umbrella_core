@@ -50,4 +50,4 @@ RUN useradd -m -u 1000 umbrella && chown -R umbrella:umbrella /app
 USER umbrella
 
 # Start API server
-CMD ["uvicorn", "api_doctrine:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["uvicorn", "api:app", "--host", "0.0.0.0", "--port", "8000"]

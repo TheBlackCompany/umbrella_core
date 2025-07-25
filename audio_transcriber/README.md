@@ -43,10 +43,19 @@ python cli.py audio.wav --output-dir output/
 ### Submit Job
 ```bash
 curl -X POST http://localhost:8000/jobs \
-  -F "file=@audio.wav" \
-  -F "priority=normal" \
-  -F "expected_speakers=2" \
-  -F "context_type=meeting"
+  -H "Content-Type: application/json" \
+  -d '{
+    "audio_url": "s3://bucket/audio.wav",
+    "source_metadata": {
+      "priority": "normal",
+      "expected_speakers": 2,
+      "environment": "clean"
+    },
+    "processing_options": {
+      "diarization": true,
+      "language": "en"
+    }
+  }'
 ```
 
 ### Check Status

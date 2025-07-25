@@ -29,47 +29,51 @@ class DoctrineComplianceChecker:
         """Verify all required API endpoints exist"""
         print("\n=== API ENDPOINTS ===")
         
-        # Check api_doctrine.py for required endpoints
-        api_file = Path("api_doctrine.py")
+        # Check api.py for required endpoints
+        api_file = Path("api.py")
         if api_file.exists():
             content = api_file.read_text(encoding='utf-8')
             
             # Core endpoints
             self.check("/jobs" in content and '@app.post("/jobs"' in content, 
                       "POST /jobs - Submit new transcription job",
-                      "Implemented in api_doctrine.py")
+                      "Implemented in api.py")
             
             self.check('@app.get("/jobs/{job_id}/status"' in content,
                       "GET /jobs/{id}/status - Check job status",
-                      "Implemented in api_doctrine.py")
+                      "Implemented in api.py")
             
             self.check('get("/jobs/{job_id}/result")' in content.lower(),
                       "GET /jobs/{id}/result - Retrieve completed transcript",
-                      "Implemented in api_doctrine.py")
+                      "Implemented in api.py")
             
             self.check('delete("/jobs/{job_id}")' in content.lower(),
                       "DELETE /jobs/{id} - Cancel in-progress job",
-                      "Implemented in api_doctrine.py")
+                      "Implemented in api.py")
             
             # Webhook endpoints
             self.check('post("/jobs/{job_id}/webhook")' in content.lower(),
                       "POST /jobs/{id}/webhook - Register completion webhook",
-                      "Implemented in api_doctrine.py")
+                      "Implemented in api.py")
+            
+            self.check('delete("/jobs/{job_id}/webhook")' in content.lower(),
+                      "DELETE /jobs/{id}/webhook - Remove webhook",
+                      "Implemented in api.py")
             
             # Utility endpoints
             self.check('get("/health")' in content.lower(),
                       "GET /health - Service health check",
-                      "Implemented in api_doctrine.py")
+                      "Implemented in api.py")
             
             self.check('get("/metrics")' in content.lower(),
                       "GET /metrics - Processing statistics",
-                      "Implemented in api_doctrine.py")
+                      "Implemented in api.py")
             
             self.check('@app.post("/estimate"' in content,
                       "POST /estimate - Cost/time estimation",
-                      "Implemented in api_doctrine.py")
+                      "Implemented in api.py")
         else:
-            self.check(False, "API implementation file exists", "api_doctrine.py not found")
+            self.check(False, "API implementation file exists", "api.py not found")
             
     def verify_schema_compliance(self):
         """Verify output schema matches doctrine"""
