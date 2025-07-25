@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  transcriber:
+    build: .
+    image: umbrella-transcriber:latest
+    runtime: nvidia
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+      - CUDA_VISIBLE_DEVICES=0
+    volumes:
+      - ./raw:/data/input
+      - ./processed:/data/output
+    ports:
+      - "8000:8000"
+    restart: unless-stopped
