@@ -1,0 +1,148 @@
+{
+  "name": "umbrella-transcriber",
+  "version": "1.0.0",
+  "description": "Audio transcription service with speaker diarization and legislative optimization",
+  "type": "http",
+  "config": {
+    "baseUrl": "http://localhost:8000",
+    "auth": {
+      "type": "header",
+      "header": "X-API-Key",
+      "value": "${UMBRELLA_API_KEY}"
+    }
+  },
+  "tools": [
+    {
+      "name": "transcribe_audio",
+      "description": "Submit an audio file for transcription with speaker diarization",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "audio_url": {
+            "type": "string",
+            "description": "URL or path to the audio file"
+          },
+          "source_type": {
+            "type": "string",
+            "enum": ["legislative_hearing", "citizen_submission", "phone_call", "meeting", "interview"],
+            "description": "Type of audio source"
+          },
+          "expected_speakers": {
+            "type": "integer",
+            "description": "Expected number of speakers (optional)"
+          },
+          "priority": {
+            "type": "string",
+            "enum": ["emergency", "urgent", "normal", "batch", "citizen"],
+            "default": "normal",
+            "description": "Processing priority"
+          },
+          "language": {
+            "type": "string",
+            "default": "en",
+            "description": "Audio language code"
+          }
+        },
+        "required": ["audio_url", "source_type"]
+      },
+      "endpoint": {
+        "method": "POST",
+        "path": "/jobs",
+        "body": {
+          "audio_url": "{audio_url}",
+          "source_metadata": {
+            "source_type": "{source_type}",
+            "expected_speakers": "{expected_speakers}",
+            "priority": "{priority}"
+          },
+          "processing_options": {
+            "diarization": true,
+            "language": "{language}"
+          }
+        }
+      }
+    },
+    {
+      "name": "check_transcription_status",
+      "description": "Check the status of a transcription job",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "job_id": {
+            "type": "string",
+            "description": "The job ID returned from transcribe_audio"
+          }
+        },
+        "required": ["job_id"]
+      },
+      "endpoint": {
+        "method": "GET",
+        "path": "/jobs/{job_id}/status"
+      }
+    },
+    {
+      "name": "get_transcript",
+      "description": "Retrieve the completed transcript with speaker labels and timestamps",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "job_id": {
+            "type": "string",
+            "description": "The job ID of a completed transcription"
+          }
+        },
+        "required": ["job_id"]
+      },
+      "endpoint": {
+        "method": "GET",
+        "path": "/jobs/{job_id}/result"
+      }
+    },
+    {
+      "name": "estimate_transcription_cost",
+      "description": "Estimate the cost and time for transcribing an audio file",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "duration_seconds": {
+            "type": "number",
+            "description": "Duration of the audio in seconds"
+          },
+          "priority": {
+            "type": "string",
+            "enum": ["emergency", "urgent", "normal", "batch", "citizen"],
+            "default": "normal"
+          }
+        },
+        "required": ["duration_seconds"]
+      },
+      "endpoint": {
+        "method": "POST",
+        "path": "/estimate",
+        "body": {
+          "duration_seconds": "{duration_seconds}",
+          "priority": "{priority}",
+          "diarization": true
+        }
+      }
+    }
+  ],
+  "resources": [
+    {
+      "name": "supported_models",
+      "description": "List of available Whisper models and settings",
+      "endpoint": {
+        "method": "GET",
+        "path": "/models"
+      }
+    },
+    {
+      "name": "service_health",
+      "description": "Check service health and GPU availability",
+      "endpoint": {
+        "method": "GET",
+        "path": "/health"
+      }
+    }
+  ]
+}

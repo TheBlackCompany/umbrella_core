@@ -12,6 +12,7 @@ High-accuracy audio transcription service with speaker diarization, part of the 
 - **Legislative optimization** with bill and legislator extraction
 - **Forensic chain of custody** for legal compliance
 - **REST API** with job management
+- **MCP Compatible** - Works with Claude and other AI assistants via Model Context Protocol
 
 ## Quick Start
 
@@ -110,3 +111,4 @@ WAV, MP3, M4A, FLAC, OGG, WebM
 - [Main README](../README.md)
 - [API Documentation](http://localhost:8000/docs)
 - [Deployment Guide](./deploy.md)
+- [MCP Integration Guide](./MCP_INTEGRATION.md)
